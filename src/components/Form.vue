@@ -1,6 +1,7 @@
 <template>
 <form novalidate @submit.prevent="handleSubmit">
   <fieldset>
+    <!-- required -->
     <div class="field">
       <label for="requiredText">This text is required</label>
       <input type="text"
@@ -10,6 +11,18 @@
       @blur="handleBlur"
       :aria-invalid="messages.requiredText">
       <p class="messages" v-if="messages.requiredText">There is an error</p>
+    </div>
+    <!-- max and min length -->
+    <div class="field">
+      <label for="minmaxText">This text must be between 2-8 characters</label>
+      <input type="text"
+      name="minmaxText"
+      id="minmaxText"
+      minlength="2"
+      maxlength="8"
+      @blur="handleBlur"
+      :aria-invalid="messages.minmaxText">
+      <p class="messages" v-if="messages.minmaxText">There is an error</p>
     </div>
   </fieldset>
   <button type="submit">Submit</button>
@@ -37,15 +50,13 @@ export default {
   methods: {
     runValidation: function(elements) {
       this.messages = (elements || []).reduce((result, element) => {
-        return {...result, [element.name]: element.validity}
+        return {...result, [element.name]: !element.checkValidity() ? element.validity : null};
       }, this.messages);
     },
     handleBlur: function(event) {
-      console.log('handleBlur', event.target);
       this.runValidation([event.target]);
     },
     handleSubmit: function(event) {
-      console.log('handleSubmit', event.target);
       const formInputElements = [...event.target.querySelectorAll('input')];
       this.runValidation(formInputElements);
     }
