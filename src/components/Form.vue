@@ -55,7 +55,7 @@
       name="futureDate"
       id="futureDate"
       :min="today"
-      mmax="2099-12-31"
+      max="2099-12-31"
       @blur="handleBlur"
       :aria-invalid="messages.futureDate">
       <p class="messages" v-if="messages.futureDate">There is an error</p>
