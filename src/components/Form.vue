@@ -3,7 +3,6 @@
     <fieldset>
       <!-- required -->
       <div class="field">
-        <label for="requiredText">This text is required</label>
         <input
           type="text"
           name="requiredText"
@@ -12,11 +11,11 @@
           @blur="handleBlur"
           :aria-invalid="messages.requiredText"
         >
+        <label for="requiredText">This text is required</label>
         <p class="messages" v-if="messages.requiredText">There is an error</p>
       </div>
       <!-- max and min length. Here we use pattern validation, as minlength/maxlength will constrain the input. -->
       <div class="field">
-        <label for="minmaxText">This text must be between 2-8 characters</label>
         <input
           type="text"
           name="minmaxText"
@@ -25,13 +24,11 @@
           @blur="handleBlur"
           :aria-invalid="messages.minmaxText"
         >
+        <label for="minmaxText">This text must be between 2-8 characters</label>
         <p class="messages" v-if="messages.minmaxText">There is an error</p>
       </div>
       <!-- required + max and min length. Combination of the above -->
       <div class="field">
-        <label
-          for="requiredMinmaxText"
-        >This text is required and must also be between 2-8 characters</label>
         <input
           type="text"
           name="requiredMinmaxText"
@@ -41,11 +38,13 @@
           @blur="handleBlur"
           :aria-invalid="messages.requiredMinmaxText"
         >
+        <label
+          for="requiredMinmaxText"
+        >This text is required and must also be between 2-8 characters</label>
         <p class="messages" v-if="messages.requiredMinmaxText">There is an error</p>
       </div>
       <!-- max and min number. -->
       <div class="field">
-        <label for="minmaxNumber">This number must be between 2-8</label>
         <input
           type="number"
           name="minmaxNumber"
@@ -56,11 +55,11 @@
           @blur="handleBlur"
           :aria-invalid="messages.minmaxNumber"
         >
+        <label for="minmaxNumber">This number must be between 2-8</label>
         <p class="messages" v-if="messages.minmaxNumber">There is an error</p>
       </div>
       <!-- date - must not be in the past. We need to set a sensible-ish max as well. Without this, using the down arrow on the year field will give 275760 (on chrome)-->
       <div class="field">
-        <label for="futureDate">This date must be today or later</label>
         <input
           type="date"
           name="futureDate"
@@ -70,6 +69,7 @@
           @blur="handleBlur"
           :aria-invalid="messages.futureDate"
         >
+        <label for="futureDate">This date must be today or later</label>
         <p class="messages" v-if="messages.futureDate">There is an error</p>
       </div>
       <!-- required + max and min length. This time in a textarea -->
@@ -79,7 +79,6 @@ The textarea appears not to support the pattern attribute in Chrome, so we canno
 However we can use the setCustomValidity method, which we will call on change. See https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
       -->
       <div class="field">
-        <label for="requiredMinmaxText">This text is required and has max 10 characters</label>
         <textarea
           name="requiredMinmaxTextArea"
           id="requiredMinmaxTextArea"
@@ -90,11 +89,11 @@ However we can use the setCustomValidity method, which we will call on change. S
           @change="handleChange"
           :aria-invalid="messages.requiredMinmaxTextArea"
         ></textarea>
+        <label for="requiredMinmaxText">This text is required and has max 10 characters</label>
         <p class="messages" v-if="messages.requiredMinmaxTextArea">There is an error</p>
       </div>
       <!-- required select -->
       <div class="field">
-        <label for="requiredSelect">This select is required</label>
         <select
           name="requiredSelect"
           id="requiredSelect"
@@ -102,10 +101,11 @@ However we can use the setCustomValidity method, which we will call on change. S
           @blur="handleBlur"
           :aria-invalid="messages.requiredSelect"
         >
-        <option></option>
+          <option></option>
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
         </select>
+        <label for="requiredSelect">This select is required</label>
         <p class="messages" v-if="messages.requiredSelect">There is an error</p>
       </div>
     </fieldset>
@@ -180,7 +180,30 @@ export default {
 [aria-invalid] {
   border: 1px solid red;
 }
-.messages {
+.field {
+  display: flex;
+  flex-direction: column;
+}
+.field:not(:last-child) {
+  margin-bottom: 1em;
+}
+.field .label {
+  order: 1;
+}
+.field input,
+.field textarea,
+.field select {
+  order: 2;
+}
+.field .messages {
+  order: 3;
+}
+.field :required ~ label:after {
+  content: " *";
+  color: red;
+}
+
+.field :invalid ~ .messages {
   color: red;
 }
 </style>
