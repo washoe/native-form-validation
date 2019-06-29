@@ -171,20 +171,21 @@ The textarea appears not to support the pattern attribute in Chrome, so we canno
 const setValidationMessages = elements => {
   // For now, the same map will be applied everywhere
   const messageMap = {
-    badInput: "Please enter a valid value",
-    patternMismatch: "Does not match regex pattern",
-    rangeOverflow: "Too high",
-    rangeUnderflow: "Too low",
-    stepMismatch: "Does not resolve to the given step size",
-    tooLong: "Too long",
-    tooShort: "Too short",
-    typeMismatch: "Cannot be resolved to the required type",
-    valueMissing: "Cannot be blank"
+    badInput: () => "Please enter a valid value",
+    patternMismatch: () => "Does not match regex pattern",
+    rangeOverflow: () => "Too high",
+    rangeUnderflow: element =>
+      element.type === "date" ? "Cannot be in the past" : "Too low",
+    stepMismatch: () => "Does not resolve to the given step size",
+    tooLong: () => "Too long",
+    tooShort: () => "Too short",
+    typeMismatch: () => "Cannot be resolved to the required type",
+    valueMissing: () => "Cannot be blank"
   };
   return elements.map(element => {
     const validationMessage = Object.entries(messageMap)
       .filter(entry => element.validity[entry[0]])
-      .map(entry => entry[1]);
+      .map(entry => entry[1](element));
     element.setCustomValidity(validationMessage.join("|"));
     return element;
   });
@@ -214,7 +215,9 @@ export default {
     reportMessages: function(elements) {
       this.reportedMessages = setValidationMessages(elements).reduce(
         (result, element) => {
-          result[element.name] = element.validationMessage ? element.validationMessage.split('|') : undefined;
+          result[element.name] = element.validationMessage
+            ? element.validationMessage.split("|")
+            : undefined;
           return result;
         },
         { ...this.reportedMessages }
