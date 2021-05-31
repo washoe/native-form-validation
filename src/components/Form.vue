@@ -268,19 +268,24 @@ export default {
 </script>
 
 <style scoped>
+fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 /**
 ** Field layout
 ** By placing the input first in the html
 ** we can select and style the other elements (e.g. the label)
-** Flexbox ordering allows us to change the order of appearance
+** order property allows us to change the order of appearance
 ** e.g. so the label appears above */
 .field {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  /* add columns for inline layout */
+  /* grid-template-columns: 1fr 2fr 1fr; */
+  gap: 4px;
 }
-.field:not(:last-child) {
-  margin-bottom: 1em;
-}
+
 .field .label {
   order: 1;
 }
@@ -317,6 +322,7 @@ form {
 fieldset > .errors,
 form > .errors {
   display: none;
+  margin: 0;
 }
 
 fieldset:valid > legend::after {
@@ -338,5 +344,9 @@ fieldset:invalid > .errors,
 form:invalid > .errors {
   display: inherit;
   color: var(--error-color);
+}
+
+fieldset:valid {
+  border-color: var(--success-color);
 }
 </style>
