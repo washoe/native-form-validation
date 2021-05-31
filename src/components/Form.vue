@@ -141,6 +141,32 @@
       </div>
       <p class="errors">This fieldset is not yet complete</p>
     </fieldset>
+    <fieldset>
+      <div class="field">
+        <input
+          type="date"
+          name="startDate"
+          v-model="startDate"
+          v-bind:max="endDate"
+          @blur="handleBlur"
+          :aria-invalid="reportedMessages.startDate"
+        />
+        <label for="startDate">Start date</label>
+        <p class="errors">{{ reportedMessages.startDate }}</p>
+      </div>
+      <div class="field">
+        <input
+          type="date"
+          name="endDate"
+          v-model="endDate"
+          v-bind:min="startDate"
+          @blur="handleBlur"
+          :aria-invalid="reportedMessages.endDate"
+        />
+        <label for="endDate">End date</label>
+        <p class="errors">{{ reportedMessages.endDate }}</p>
+      </div>
+    </fieldset>
     <p class="errors">This form is not yet complete</p>
     <fieldset>
       <button type="submit">Submit</button>
