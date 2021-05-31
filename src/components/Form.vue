@@ -196,7 +196,7 @@
  */
 const setValidationMessages = (elements) => {
   // For now, the same map will be applied everywhere
-  const messageMap = {
+  const defaultMessages = {
     badInput: () => "Please enter a valid value",
     patternMismatch: () => "Does not match regex pattern",
     rangeOverflow: (element) =>
@@ -213,8 +213,16 @@ const setValidationMessages = (elements) => {
     typeMismatch: () => "Cannot be resolved to the required type",
     valueMissing: () => "Cannot be blank",
   };
+
+  const customMessagesByName = {
+    minmaxText: {
+      ...defaultMessages,
+      patternMismatch: () => "Must be between 2 and 8 characters",
+    },
+  };
   return elements.map((element) => {
-    const validationMessage = Object.entries(messageMap)
+    const messages = customMessagesByName[element.name] || defaultMessages;
+    const validationMessage = Object.entries(messages)
       .filter((entry) => element.validity[entry[0]])
       .map((entry) => entry[1](element));
     element.setCustomValidity(validationMessage.join("|"));
@@ -228,6 +236,8 @@ export default {
     return {
       reportedMessages: {},
       today: new Date().toISOString().slice(0, 10),
+      startDate: null,
+      endDate: null,
     };
   },
   computed: {
