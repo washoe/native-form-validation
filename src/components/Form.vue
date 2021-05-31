@@ -199,9 +199,14 @@ const setValidationMessages = (elements) => {
   const messageMap = {
     badInput: () => "Please enter a valid value",
     patternMismatch: () => "Does not match regex pattern",
-    rangeOverflow: () => "Too high",
+    rangeOverflow: (element) =>
+      element.type === "date"
+        ? `Cannot be after ${new Date(element.max).toLocaleDateString()}`
+        : "Too high",
     rangeUnderflow: (element) =>
-      element.type === "date" ? "Cannot be in the past" : "Too low",
+      element.type === "date"
+        ? `Cannot be before ${new Date(element.min).toLocaleDateString()}`
+        : "Too low",
     stepMismatch: () => "Does not resolve to the given step size",
     tooLong: () => "Too long",
     tooShort: () => "Too short",
