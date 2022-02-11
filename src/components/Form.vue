@@ -9,7 +9,7 @@
           name="requiredText"
           id="requiredText"
           required
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.requiredText"
         />
         <label for="requiredText">This text is required</label>
@@ -23,7 +23,7 @@
           id="minmaxText"
           pattern="^(.{2,8})$"
           size="8"
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.minmaxText"
         />
         <label for="minmaxText">This text must be between 2-8 characters</label>
@@ -37,7 +37,7 @@
           id="requiredMinmaxText"
           pattern="^(.{2,8})$"
           required
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.requiredMinmaxText"
         />
         <label for="requiredMinmaxText"
@@ -58,7 +58,7 @@
           pattern="^[0-9]$"
           min="2"
           max="8"
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.minmaxNumber"
         />
         <label for="minmaxNumber">This number must be between 2-8</label>
@@ -72,7 +72,7 @@
           id="futureDate"
           :min="today"
           max="2099-12-31"
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.futureDate"
         />
         <label for="futureDate"
@@ -86,7 +86,7 @@
           name="requiredDate"
           id="requiredDate"
           required
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.requiredDate"
         />
         <label for="requiredDate">This date is required</label>
@@ -98,7 +98,7 @@
           name="requiredTime"
           id="requiredTime"
           required
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.requiredTime"
         />
         <label for="requiredTime">This time is required</label>
@@ -115,7 +115,7 @@
           pattern="^(.{0,10})$"
           maxlength="10"
           required
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.requiredMinmaxTextArea"
         ></textarea>
         <label for="requiredMinmaxTextArea"
@@ -129,10 +129,10 @@
           name="requiredSelect"
           id="requiredSelect"
           required
-          @blur="handleBlur"
+          @change="doValidation"
           :aria-invalid="reportedMessages.requiredSelect"
         >
-          <option>No option selected</option>
+          <option :value="null">No option selected</option>
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
         </select>
@@ -148,7 +148,7 @@
           name="startDate"
           v-model="startDate"
           v-bind:max="endDate"
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.startDate"
         />
         <label for="startDate">Start date</label>
@@ -160,7 +160,7 @@
           name="endDate"
           v-model="endDate"
           v-bind:min="startDate"
-          @blur="handleBlur"
+          @blur="doValidation"
           :aria-invalid="reportedMessages.endDate"
         />
         <label for="endDate">End date</label>
@@ -185,7 +185,7 @@
  * - Do not prevent user from entering invalid data (no constraint)
  * - Replace default validation errors with custom errors
  * - Form submission will be blocked if any fields are invalid
- * - All error errors to be displayed below the field
+ * - All errors to be displayed below the field
  * ref: https://www.w3.org/WAI/WCAG21/working-examples/aria-invalid-data-format/
  */
 
@@ -257,18 +257,20 @@ export default {
       this.reportedMessages = setValidationMessages(elements).reduce(
         (result, element) => {
           result[element.name] = element.validationMessage
-            ? element.validationMessage.split("|").join(', ')
+            ? element.validationMessage.split("|").join(", ")
             : undefined;
           return result;
         },
         { ...this.reportedMessages }
       );
     },
-    handleBlur: function (event) {
+    doValidation: function (event) {
       this.reportMessages([event.target]);
     },
-    handleSubmit: function () {
+    handleSubmit: function (event) {
       this.reportMessages(this.fieldsToValidate);
+      const formArray = Array.from(new FormData(event.target));
+      console.table(formArray);
     },
     handleReset: function () {
       this.reportedMessages = {};
